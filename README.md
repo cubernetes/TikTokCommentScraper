@@ -6,9 +6,9 @@ community interactions.
 # "Installation"
 Contrary to popular opinion, this repo does contain the virtual environment it's
 running on (it's only for windows anyway). The python environment is heavily
-stripped down and is almost as big as if you'd compile it to an exe directly.
+stripped down and is almost as small as if you'd compile it to an exe directly.
 Because I doubt this repo will get any major public attention, I'll won't be
-making the effort to make it comply with any best practices or standards.
+making a great effort to make it comply with any best practices or standards.
 It works for me and for my friend, which is enough for me. You can
 `git clone https://github.com/cubernetes/TikTokCommentScraper`
 the repo or download the zip directly (autocrlf is false, so no worries here):
@@ -20,7 +20,9 @@ it's already ported, only the batch files and the venv won't work, which are bot
 only for user friendliness.
 
 requirements would be:
+
 `pyperclip`
+
 `openpyxl`
 
 # How does it work?/How to use it?
