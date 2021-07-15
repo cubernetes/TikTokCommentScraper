@@ -12,6 +12,7 @@ making the effort to make it comply with any best practices or standards.
 It works for me and for my friend, which is enough for me. You can
 `git clone https://github.com/cubernetes/TikTokCommentScraper`
 the repo or download the zip directly (autocrlf is false, so no worries here):
+
 `curl -L -o "TikTokCmtScraper.zip" https://github.com/cubernetes/TikTokCommentScraper/archive/refs/heads/main.zip`
 I probably won't be making any effort to port it to Linux or OSX, but in theory
 it's already ported, only the batch files and the venv won't work, which are both
