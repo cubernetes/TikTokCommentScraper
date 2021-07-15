@@ -29,7 +29,7 @@ TL;DR
 - open your favorite chromium based browser
 - go to the TikTok post you want to scrape the comments from (make sure you can already scroll the comments)
 - press F12 (goto developer console)
-- open windows file explorer in root of project folder (where the .cmd files are)
+- open windows file explorer in root of this project folder (where the .cmd files are)
 - double click 'Copy JavaScript for Developer Console.cmd'
 - go back to developer console; paste the javascript; run it
 - wait until it says 'CSV copied to clipboard!'
