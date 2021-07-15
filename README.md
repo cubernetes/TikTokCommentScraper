@@ -24,6 +24,19 @@ requirements would be:
 `openpyxl`
 
 # How does it work?/How to use it?
+TL;DR
+~~~~~~~~~~
+- open your favorite chromium based browser
+- go to the TikTok post you want to scrape the comments from (make sure you can already scroll the comments)
+- press F12 (goto developer console)
+- open windows file explorer in root of project folder (where the .cmd files are)
+- double click 'Copy JavaScript for Developer Console.cmd'
+- go back to developer console; paste the javascript; run it
+- wait until it says 'CSV copied to clipboard!'
+- go back to file explorer; double click 'Extract Comments from Clipboard.cmd'
+- voila, the file 'Comments_<UtcTimeStamp>.xlsx' will no contain all the comments
+~~~~~~~~~~
+
 This comment scraper uses the chrome developer console (chromium based browser
 recommended/maybe needed), JavaScript and Python. The JavaScript (which is
 documentated and located in '.\python38\Scrape TikTok Comments.js' from the
