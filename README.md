@@ -1,6 +1,6 @@
 # What can this comment scraper do?
 This comment scraper/extractor/crawler manages to get all the comments
-from any TikTok post. This can be usefull for giveaways, votes or other bigger
+from any TikTok post. This can be useful for giveaways, votes or other bigger
 community interactions.
 
 # "Installation"
