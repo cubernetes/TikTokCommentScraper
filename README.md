@@ -34,7 +34,7 @@ TL;DR
 - go back to developer console; paste the javascript; run it
 - wait until it says 'CSV copied to clipboard!'
 - go back to file explorer; double click 'Extract Comments from Clipboard.cmd'
-- voila, the file 'Comments_<UtcTimeStamp>.xlsx' will no contain all the comments
+- voila, the file 'Comments_<UtcTimeStamp>.xlsx' will now contain all the comments
 ~~~~~~~~~~
 
 This comment scraper uses the chrome developer console (chromium based browser
