@@ -1,12 +1,13 @@
 # What can this comment scraper do?
 This comment scraper/extractor/crawler manages to get all the comments
 from any TikTok post. This can be useful for giveaways, votes or other bigger
-community interactions.
+community interactions, although I generally advise to use poll services such as strawpoll.com,
+strawpoll.me or other services, because they are more accurate, reliable, and easier to use.
 
 # "Installation"
 Contrary to popular opinion, this repo does contain the virtual environment it's
 running on (it's only for windows anyway). The python environment is heavily
-stripped down and is almost as small as if you'd compile it to an exe directly.
+stripped down and is almost as small as if you'd compile it to a binary directly.
 Because I doubt this repo will get any major public attention, I'll won't be
 making a great effort to make it comply with any best practices or standards.
 It works for me and for my friend, which is enough for me. You can
@@ -16,10 +17,10 @@ the repo or download the zip directly (autocrlf is false, so no worries here):
 `curl -L -o "TikTokCmtScraper.zip" https://github.com/cubernetes/TikTokCommentScraper/archive/refs/heads/main.zip`
 
 I probably won't be making any effort to port it to Linux or OSX, but in theory
-it's already ported, only the batch files and the venv won't work, which are both
-only for user friendliness.
+it's already ported; only the batch files and the venv won't work, which are both
+only for user friendliness anyway.
 
-requirements would be:
+Python requirements would be (if you don't want to use the venv):
 
 `pyperclip`
 
