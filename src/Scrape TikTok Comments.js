@@ -10,33 +10,32 @@ with({
         specified in the trailing comment should suffice (not tested at all).
     */
 
-    var repliedToSelector                   = 'a.user-info.jsx-1935869581.comment-pc';
-    var AllCommentsSelector                 = 'div.jsx-966068288.comment-item.comment-pc';               // = '.comment-item'
-    var commentChildDivSelector             = 'div.jsx-365602788.comment-content.level-1.comment-pc';    // = '.level-1'
-    var commentChildDivExtraSelector        = 'div.jsx-966068288.more-contents.more-style-2';            // = '.more-style-2'
-    var level2CommentsSelector              = 'div.jsx-365602788.comment-content.level-2.comment-pc';    // = '.level-2'
+    var repliedToSelector                   = 'a.user-info.comment-pc';
+    var AllCommentsSelector                 = 'div.comment-item.comment-pc';               // = '.comment-item'
+    var commentChildDivSelector             = 'div.comment-content.level-1.comment-pc';    // = '.level-1'
+    var commentChildDivExtraSelector        = 'div.more-contents.more-style-2';            // = '.more-style-2'
+    var level2CommentsSelector              = 'div.comment-content.level-2.comment-pc';    // = '.level-2'
 
-    var publisherProfileUrlSelector         = 'a.user-info-link.jsx-1040045378';                         // = '.user-info-link'
-    var nicknameAndTimePublishedAgoSelector = 'h2.jsx-2829469314.jsx-932449746.user-nickname';           // = '.user-nickname'
-    var level2CommentsSelector              = 'div.jsx-365602788.comment-content.level-2.comment-pc';    // = '.level-2.comment-pc'
+    var publisherProfileUrlSelector         = 'a.user-info-link';                          // = '.user-info-link'
+    var nicknameAndTimePublishedAgoSelector = 'h2.user-nickname';                          // = '.user-nickname'
 
-    var postUrlSelector                     = 'div.jsx-2335988431.link-container';                       // = '.link-container'
-    var likeCountSelector                   = 'strong.jsx-956042027.like-text';                          // = '.like-text'
-    var descriptionSelector                 = 'h1.jsx-2936247622.video-meta-title';                      // = '.video-meta-title'
-    var tiktokNumberOfCommentsSelector      = 'strong.jsx-956042027.comment-text';                       // = '.strong.comment-text'
+    var postUrlSelector                     = 'div.link-container';                        // = '.link-container'
+    var likeCountSelector                   = 'strong.like-text';                          // = '.like-text'
+    var descriptionSelector                 = 'h1.video-meta-title';                       // = '.video-meta-title'
+    var tiktokNumberOfCommentsSelector      = 'strong.comment-text';                       // = '.strong.comment-text'
 
-    var usernameSelector                    = 'span.jsx-365602788.username';                             // = '.username'
-    var timeCommentedAgoSelector            = 'span.jsx-365602788.comment-time';                         // = '.comment-time'
-    var commentLikesCountSelector           = 'span.jsx-365602788.count';                                // = '.count'
-    var commentParagraphSelector            = 'p.jsx-365602788.comment-text';                            // = '.comment-text'
+    var usernameSelector                    = 'span.username';                             // = '.username'
+    var timeCommentedAgoSelector            = 'span.comment-time';                         // = '.comment-time'
+    var commentLikesCountSelector           = 'span.count';                                // = '.count'
+    var commentParagraphSelector            = 'p.comment-text';                            // = '.comment-text'
     var commentTextSelector                 = ':not(.bottom-container):not(.reply):not(.comment-time)';
-    var userProfileUrlSelector              = 'a.user-info.jsx-1935869581.comment-pc';
+    var userProfileUrlSelector              = 'a.user-info.comment-pc';
 
     // readMoreDivSelector selects all the outermost divs of a read more paragraph.
     // From there, the following 2 selectors combined select the paragraph.
-    var readMoreDivSelector                 = 'div.jsx-966068288.more-contents.more-style-2';
-    var readMoreDivSelector2                = 'div.jsx-4265445291.view-more';
-    var readMoreParagraphSelector           = 'p.jsx-4265445291:not(.hidden):not(.hide)';
+    var readMoreDivSelector                 = 'div.more-contents.more-style-2';
+    var readMoreDivSelector2                = 'div.view-more';
+    var readMoreParagraphSelector           = 'p:not(.hidden):not(.hide)';
 
 
     // Function definitions
