@@ -3,44 +3,49 @@
 with({
     copy
 }) {
-    /* 
-        This is the critical section. Every selector that contains 'jsx' (so almost everyone) is subject to change in the future,
-        since TikTok decides to changes those random numbers after 'jsx-'. If they start to break again,
-        instead of trying to update them with the new number, just remove the 'jsx-.+' class entirely, because the selector
-        specified in the trailing comment should suffice (not tested at all).
-    */
 
-    var repliedToSelector                   = 'a.user-info.comment-pc';
-    var AllCommentsSelector                 = 'div.comment-item.comment-pc';               // = '.comment-item'
-    var commentChildDivSelector             = 'div.comment-content.level-1.comment-pc';    // = '.level-1'
-    var commentChildDivExtraSelector        = 'div.more-contents.more-style-2';            // = '.more-style-2'
-    var level2CommentsSelector              = 'div.comment-content.level-2.comment-pc';    // = '.level-2'
+    var repliedToXPath                   = 'a.user-info.comment-pc';
+    var AllCommentsXPath                 = '/html/body/div[1]/div[2]/div[3]/div[2]/div[3]';
+    var commentChildDivXPath             = 'div.comment-content.level-1.comment-pc';
+    var commentChildDivExtraXPath        = 'div.more-contents.more-style-2';
+    var level2CommentsXPath              = 'div.comment-content.level-2.comment-pc';
 
-    var publisherProfileUrlSelector         = 'a.user-info-link';                          // = '.user-info-link'
-    var nicknameAndTimePublishedAgoSelector = 'h2.user-nickname';                          // = '.user-nickname'
+    var publisherProfileUrlXPath         = '/html/body/div[1]/div[2]/div[3]/div[2]/div[1]/a[1]';
+    var nicknameAndTimePublishedAgoXPath = '/html/body/div[1]/div[2]/div[3]/div[2]/div[1]/a[2]/span[2]';
 
-    var postUrlSelector                     = 'div.link-container';                        // = '.link-container'
-    var likeCountSelector                   = 'strong.like-text';                          // = '.like-text'
-    var descriptionSelector                 = 'h1.video-meta-title';                       // = '.video-meta-title'
-    var tiktokNumberOfCommentsSelector      = 'strong.comment-text';                       // = '.strong.comment-text'
+    var postUrlXPath                     = 'div.link-container';
+    var likeCountXPath                   = 'strong.like-text';
+    var descriptionXPath                 = 'h1.video-meta-title';
+    var tiktokNumberOfCommentsXPath      = 'strong.comment-text';
 
-    var usernameSelector                    = 'span.username';                             // = '.username'
-    var timeCommentedAgoSelector            = 'span.comment-time';                         // = '.comment-time'
-    var commentLikesCountSelector           = 'span.count';                                // = '.count'
-    var commentParagraphSelector            = 'p.comment-text';                            // = '.comment-text'
-    var commentTextSelector                 = ':not(.bottom-container):not(.reply):not(.comment-time)';
-    var userProfileUrlSelector              = 'a.user-info.comment-pc';
+    var usernameXPath                    = 'span.username';
+    var timeCommentedAgoXPath            = 'span.comment-time';
+    var commentLikesCountXPath           = 'span.count';
+    var commentParagraphXPath            = 'p.comment-text';
+    var commentTextXPath                 = ':not(.bottom-container):not(.reply):not(.comment-time)';
+    var userProfileUrlXPath              = 'a.user-info.comment-pc';
 
-    // readMoreDivSelector selects all the outermost divs of a read more paragraph.
-    // From there, the following 2 selectors combined select the paragraph.
-    var readMoreDivSelector                 = 'div.more-contents.more-style-2';
-    var readMoreDivSelector2                = 'div.view-more';
-    var readMoreParagraphSelector           = 'p:not(.hidden):not(.hide)';
+    // readMoreDivXPath selects all the outermost divs of a read more paragraph.
+    // From there, the following 2 XPaths combined select the paragraph.
+    var readMoreDivXPath                 = '/html/body/div[1]/div[2]/div[3]/div[2]/div[3]/div/div[2]/div/p';
+    var readMoreDivXPath2                = '/html/body/div[1]/div[2]/div[3]/div[2]/div[3]/div/div[2]/div[4]/p[1]';
+    var readMoreParagraphXPath           = 'p:not(.hidden):not(.hide)';
 
 
-    // Function definitions
+    // More reliable than selector
+    function getElementsByXPath(xpath, parent)
+    {
+        let results = [];
+        let query = document.evaluate(xpath, parent || document,
+            null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+        for (let i = 0, length = query.snapshotLength; i < length; ++i) {
+            results.push(query.snapshotItem(i));
+        }
+        return results;
+    }
+
     function getAllComments(){
-        return document.querySelectorAll(AllCommentsSelector);
+        return getElementsByXPath(AllCommentsXPath)[0].children;
     }
 
     function quoteString(s) {
@@ -65,17 +70,16 @@ with({
     }
 
     function csvFromComment(comment) {
-        nickname = comment.querySelector(usernameSelector).outerText;
-        userProfileUrl = comment.querySelector(userProfileUrlSelector)['href'].split('?')[0];
+        nickname = getElementsByXPath(usernameSelector, comment)[0].outerText;
+        userProfileUrl = getElementsByXPath(userProfileUrlSelector, comment)[0]['href'].split('?')[0];
         user = userProfileUrl.split('/')[3].substring(1);
         commentText = "";
-        comment.querySelector(commentParagraphSelector).querySelectorAll(commentTextSelector).forEach(element => commentText += element.outerText);
+        getElementsByXPath(commentTextSelector, getElementsByXPath(commentParagraphSelector, comment)[0]).forEach(element => commentText += element.outerText);
         timeCommentedAgo = formatDate(comment.querySelector(timeCommentedAgoSelector).outerText);
-        commentLikesCount = comment.querySelector(commentLikesCountSelector).outerText;
-        pic = comment.querySelector('img')['src'];
+        commentLikesCount = getElementsByXPath(commentLikesCountSelector, comment)[0].outerText;
+        pic = getElementsByXPath('/img', comment)['src'];
         return quoteString(nickname) + ',' + quoteString(user) + ',' + quoteString(userProfileUrl) + ',' + quoteString(commentText) + ',' + timeCommentedAgo + ',' + commentLikesCount + ',' + quoteString(pic);
     }
-
 
     // Loading 1st level comments
     var loadingCommentsBuffer = 30;
@@ -103,14 +107,15 @@ with({
     }
     console.log('Openend all 1st level comments');
 
+
     // Loading 2nd level comments
     var openingCommentsBuffer = 5;
     while (openingCommentsBuffer > 0) {
-        readMoreDivs = document.querySelectorAll(readMoreDivSelector);
+        readMoreDivs = getElementsByXPath(readMoreDivXPath);
         for (var i = 0; i < readMoreDivs.length; i++) {
-            readMoreDiv2 = readMoreDivs[i].querySelector(readMoreDivSelector2);
+            readMoreDiv2 = getElementsByXPath(readMoreDivXPath2, readMoreDivs[i])[0];
             if (typeof(readMoreDiv2) != 'undefined' && readMoreDiv2 != null) {
-                readMoreParagraph = readMoreDiv2.querySelector(readMoreParagraphSelector);
+                readMoreParagraph = getElementsByXPath(readMoreParagraphXPath, readMoreDiv2);
                 if (typeof(readMoreParagraph) != 'undefined' && readMoreParagraph != null) {
                     readMoreParagraph.scrollIntoView(false);
                     readMoreParagraph.click();
@@ -131,8 +136,8 @@ with({
     // Reading all comments, extracting and converting the data to csv
     var comments = getAllComments();
 
-    var publisherProfileUrl = document.querySelector(publisherProfileUrlSelector)['href'].split('?')[0];
-    var nicknameAndPublishedAgoTime = document.querySelector(nicknameAndTimePublishedAgoSelector).outerText.split(' · ');
+    var publisherProfileUrl = getElementsByXPath(publisherProfileUrlXPath)[0]['href'].split('?')[0];
+    var nicknameAndPublishedAgoTime = document.querySelector(nicknameAndTimePublishedAgoSelector).outerText.replaceAll('\n', ' ').split(' · ');
     var level2commentsLength = document.querySelectorAll(level2CommentsSelector).length;
 
     var commentNumberDifference = Math.abs(document.querySelector(tiktokNumberOfCommentsSelector).outerText - (comments.length + level2commentsLength))
