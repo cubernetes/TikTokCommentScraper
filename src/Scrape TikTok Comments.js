@@ -1,38 +1,20 @@
-// This code was tested on a TikTok video with over 3000 comment. It got a little bit laggy during the loading phase, but it
-// worked out very good at the end. But even on a high-end machine, I wouldn't recommend running this on any TikTok with more than 10k comments
 with({
     copy
 }) {
-
-    var repliedToXPath                   = 'a.user-info.comment-pc';
     var AllCommentsXPath                 = '/html/body/div[1]/div[2]/div[3]/div[2]/div[3]';
-    var commentChildDivXPath             = 'div.comment-content.level-1.comment-pc';
-    var commentChildDivExtraXPath        = 'div.more-contents.more-style-2';
-    var level2CommentsXPath              = 'div.comment-content.level-2.comment-pc';
+    var level2CommentsXPath              = '/html/body/div[1]/div[2]/div[3]/div[2]/div[3]/div/div[2]/div/a';
 
     var publisherProfileUrlXPath         = '/html/body/div[1]/div[2]/div[3]/div[2]/div[1]/a[1]';
     var nicknameAndTimePublishedAgoXPath = '/html/body/div[1]/div[2]/div[3]/div[2]/div[1]/a[2]/span[2]';
 
-    var postUrlXPath                     = 'div.link-container';
-    var likeCountXPath                   = 'strong.like-text';
-    var descriptionXPath                 = 'h1.video-meta-title';
-    var tiktokNumberOfCommentsXPath      = 'strong.comment-text';
+    var postUrlXPath                     = '/html/body/div[1]/div[2]/div[3]/div[2]/div[2]/div[2]/div[2]/p';
+    var likeCountXPath                   = '/html/body/div[1]/div[2]/div[3]/div[2]/div[2]/div[2]/div[1]/div[1]/button[1]/strong';
+    var descriptionXPath                 = '/html/body/div[1]/div[2]/div[3]/div[2]/div[2]/div[1]';
+    var tiktokNumberOfCommentsXPath      = '/html/body/div[1]/div[2]/div[3]/div[2]/div[2]/div[2]/div[1]/div[1]/button[2]/strong';
 
-    var usernameXPath                    = 'span.username';
-    var timeCommentedAgoXPath            = 'span.comment-time';
-    var commentLikesCountXPath           = 'span.count';
-    var commentParagraphXPath            = 'p.comment-text';
-    var commentTextXPath                 = ':not(.bottom-container):not(.reply):not(.comment-time)';
-    var userProfileUrlXPath              = 'a.user-info.comment-pc';
+    var readMoreDivXPath                 = '/html/body/div[1]/div[2]/div[3]/div[2]/div[3]/div/div[2]/div/p[1]/text()/..';
 
-    // readMoreDivXPath selects all the outermost divs of a read more paragraph.
-    // From there, the following 2 XPaths combined select the paragraph.
-    var readMoreDivXPath                 = '/html/body/div[1]/div[2]/div[3]/div[2]/div[3]/div/div[2]/div/p';
-    var readMoreDivXPath2                = '/html/body/div[1]/div[2]/div[3]/div[2]/div[3]/div/div[2]/div[4]/p[1]';
-    var readMoreParagraphXPath           = 'p:not(.hidden):not(.hide)';
-
-
-    // More reliable than selector
+    // more reliable than querySelector
     function getElementsByXPath(xpath, parent)
     {
         let results = [];
@@ -53,7 +35,7 @@ with({
     }
 
     function formatDate(strDate) {
-        if (typeof(strDate) != 'undefined' && strDate != null) {
+        if (typeof strDate !== 'undefined' && strDate !== null) {
             f = strDate.split('-');
             if (f.length == 1) {
                 return strDate;
@@ -70,19 +52,17 @@ with({
     }
 
     function csvFromComment(comment) {
-        nickname = getElementsByXPath(usernameSelector, comment)[0].outerText;
-        userProfileUrl = getElementsByXPath(userProfileUrlSelector, comment)[0]['href'].split('?')[0];
-        user = userProfileUrl.split('/')[3].substring(1);
-        commentText = "";
-        getElementsByXPath(commentTextSelector, getElementsByXPath(commentParagraphSelector, comment)[0]).forEach(element => commentText += element.outerText);
-        timeCommentedAgo = formatDate(comment.querySelector(timeCommentedAgoSelector).outerText);
-        commentLikesCount = getElementsByXPath(commentLikesCountSelector, comment)[0].outerText;
-        pic = getElementsByXPath('/img', comment)['src'];
-        return quoteString(nickname) + ',' + quoteString(user) + ',' + quoteString(userProfileUrl) + ',' + quoteString(commentText) + ',' + timeCommentedAgo + ',' + commentLikesCount + ',' + quoteString(pic);
+        nickname = getElementsByXPath('./div[1]/a', comment)[0].outerText;
+        user = getElementsByXPath('./a', comment)[0]['href'].split('?')[0].split('/')[3].slice(1);
+        commentText = getElementsByXPath('./div[1]/p', comment)[0].outerText;
+        timeCommentedAgo = formatDate(getElementsByXPath('./div[1]/p[2]/span', comment)[0].outerText);
+        commentLikesCount = getElementsByXPath('./div[2]', comment)[0].outerText;
+        pic = getElementsByXPath('./a/span/img', comment)[0]['src'];
+        return quoteString(nickname) + ',' + quoteString(user) + ',' + 'https://example.com' + ',' + quoteString(commentText) + ',' + timeCommentedAgo + ',' + commentLikesCount + ',' + quoteString(pic);
     }
 
     // Loading 1st level comments
-    var loadingCommentsBuffer = 30;
+    var loadingCommentsBuffer = 15; // increase buffer if loading comments takes long and the loop break too soon
     var numOfcommentsBeforeScroll = getAllComments().length;
     while (loadingCommentsBuffer > 0) {
 
@@ -93,9 +73,9 @@ with({
 
         numOfcommentsAftScroll = getAllComments().length;
 
-        // If number of comments doesn't change after 5 iterations, break the loop.
+        // If number of comments doesn't change after 15 iterations, break the loop.
         if (numOfcommentsAftScroll !== numOfcommentsBeforeScroll) {
-            loadingCommentsBuffer = 30;
+            loadingCommentsBuffer = 15;
         } else {
             loadingCommentsBuffer--;
         };
@@ -109,26 +89,20 @@ with({
 
 
     // Loading 2nd level comments
-    var openingCommentsBuffer = 5;
-    while (openingCommentsBuffer > 0) {
+    loadingCommentsBuffer = 5; // increase buffer if loading comments takes long and the loop break too soon
+    while (loadingCommentsBuffer > 0) {
         readMoreDivs = getElementsByXPath(readMoreDivXPath);
         for (var i = 0; i < readMoreDivs.length; i++) {
-            readMoreDiv2 = getElementsByXPath(readMoreDivXPath2, readMoreDivs[i])[0];
-            if (typeof(readMoreDiv2) != 'undefined' && readMoreDiv2 != null) {
-                readMoreParagraph = getElementsByXPath(readMoreParagraphXPath, readMoreDiv2);
-                if (typeof(readMoreParagraph) != 'undefined' && readMoreParagraph != null) {
-                    readMoreParagraph.scrollIntoView(false);
-                    readMoreParagraph.click();
-                    console.log('Opening 2nd level comment ' + i);
-                    openingCommentsBuffer = 5;
-                }
-            }
+            readMoreDivs[i].click()
         }
-        openingCommentsBuffer--;
-        console.log('Buffer: ' + openingCommentsBuffer);
 
-        console.log("Ignore occasional blank lines:")
-        await new Promise(r => setTimeout(r, 1000));
+        await new Promise(r => setTimeout(r, 500));
+        if (readMoreDivs.length === 0) {
+            loadingCommentsBuffer--;
+        } else {
+            loadingCommentsBuffer = 5;
+        }
+        console.log('Buffer ' + loadingCommentsBuffer);
     }
     console.log('Openened all 2nd level comments');
 
@@ -137,41 +111,46 @@ with({
     var comments = getAllComments();
 
     var publisherProfileUrl = getElementsByXPath(publisherProfileUrlXPath)[0]['href'].split('?')[0];
-    var nicknameAndPublishedAgoTime = document.querySelector(nicknameAndTimePublishedAgoSelector).outerText.replaceAll('\n', ' ').split(' · ');
-    var level2commentsLength = document.querySelectorAll(level2CommentsSelector).length;
+    var nicknameAndPublishedAgoTime = getElementsByXPath(nicknameAndTimePublishedAgoXPath)[0].outerText.replaceAll('\n', ' ').split(' · ');
+    var level2commentsLength = getElementsByXPath(level2CommentsXPath).length;
 
-    var commentNumberDifference = Math.abs(document.querySelector(tiktokNumberOfCommentsSelector).outerText - (comments.length + level2commentsLength))
+    var commentNumberDifference = Math.abs(getElementsByXPath(tiktokNumberOfCommentsXPath)[0].outerText - (comments.length + level2commentsLength))
+
 
     var csv = 'Now,' + Date() + '\n';
-    csv += 'Post URL,' + document.querySelector(postUrlSelector).outerText.split('?')[0] + '\n';
+    csv += 'Post URL,' + getElementsByXPath(postUrlXPath)[0].outerText.split('?')[0] + '\n';
     csv += 'Publisher Nickname,' + nicknameAndPublishedAgoTime[0] + '\n';
     csv += 'Publisher URL,' + publisherProfileUrl + '\n';
-    csv += 'Publisher @,' + publisherProfileUrl.split('/')[3] + '\n';
+    csv += 'Publisher @,' + publisherProfileUrl.split('/')[3].slice(1) + '\n';
     csv += 'Publish Time,' + formatDate(nicknameAndPublishedAgoTime[1]) + '\n'; // jsx removable
-    csv += 'Post Likes,' + document.querySelector(likeCountSelector).outerText + '\n'; // jsx removable
-    csv += 'Description,' + quoteString(document.querySelector(descriptionSelector).outerText) + '\n';
+    csv += 'Post Likes,' + getElementsByXPath(likeCountXPath)[0].outerText + '\n'; // jsx removable
+    csv += 'Description,' + quoteString(getElementsByXPath(descriptionXPath)[0].outerText) + '\n';
     csv += 'Number of 1st level comments,' + comments.length + '\n';
     csv += 'Number of 2nd level comments,' + level2commentsLength + '\n';
     csv += '"Total Comments (actual, in this list, rendered in the comment section (needs all comments to be loaded!))",' + (comments.length + level2commentsLength) + '\n';
-    csv += "Total Comments (which TikTok tells you; it's too high most of the time when dealing with many comments OR way too low because TikTok limits the number of comments suddenly)," + document.querySelector(tiktokNumberOfCommentsSelector).outerText + '\n';
+    csv += "Total Comments (which TikTok tells you; it's too high most of the time when dealing with many comments OR way too low because TikTok limits the number of comments to prevent scraping)," + getElementsByXPath(tiktokNumberOfCommentsXPath)[0].outerText + '\n';
     csv += "Difference," + commentNumberDifference + '\n';
     csv += 'Comment Number (ID),Nickname,User @,User URL,Comment Text,Time,Likes,Profile Picture URL,Is 2nd Level Comment,Replied To,Number of replies\n';
     var count = 1;
 
     for (var i = 0; i < comments.length; i++) {
-        comment = comments[i].querySelector(commentChildDivSelector);
-        more = comments[i].querySelector(commentChildDivExtraSelector).querySelectorAll(level2CommentsSelector);
-        numberOfReplies = more.length;
-        csv += count + ',' + csvFromComment(comment) + ',No,---,' + numberOfReplies + '\n';
-        repliedTo = comment.querySelector(repliedToSelector)['href'].split('?')[0].split('/')[3];
+        level1comment = comments[i].children[0]
+        more = comments[i].children[1]
+        if (typeof more !== 'undefined') {
+            more = [...more.children].slice(0,-1);
+            numberOfReplies = more.length;
+        } else {
+            numberOfReplies = 0;
+        }
+        csv += count + ',' + csvFromComment(level1comment) + ',No,---,' + numberOfReplies + '\n';
+        repliedTo = getElementsByXPath('./a', level1comment)[0]['href'].split('?')[0].split('/')[3].slice(1);
         for (j = 0; j < numberOfReplies; j++) {
             count++;
             csv += count + ',' + csvFromComment(more[j]) + ',Yes,' + repliedTo + ',---\n';
         }
         count++;
-        console.log('Generating CSV for 1st level comment ' + i);
     }
-    var apparentCommentNumber = document.querySelector(tiktokNumberOfCommentsSelector).outerText;
+    var apparentCommentNumber = getElementsByXPath(tiktokNumberOfCommentsXPath)[0].outerText;
     console.log('Number of magically missing comments (not rendered in the comment section): ' + (apparentCommentNumber - count + 1) + ' (you have ' + (count - 1) + ' of ' + apparentCommentNumber + ')');
     console.log('CSV copied to clipboard!');
 
