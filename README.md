@@ -24,7 +24,6 @@ Python requirements would be (if you don't want to use the venv or if you aren't
 
 # Usage
 ## TL;DR
-~~~~~~~~~~
 - open your favorite chromium based browser
 - go to the TikTok post you want to scrape the comments from (make sure you can already scroll the comments)
 - press F12 (goto developer console)
@@ -36,7 +35,8 @@ Python requirements would be (if you don't want to use the venv or if you aren't
 - go back to file explorer; double click 'Extract Comments from Clipboard.cmd'
 	- if you're not using Windows, just run the src/*.py file manually with python (see requirements)
 - voilá, the file 'Comments_<UtcTimeStamp>.xlsx' will now contain all the comments and additional information
-~~~~~~~~~~
+
+You can also watch this video: https://www.youtube.com/watch?v=FsQEm2zalWA
 
 ## In Detail
 
