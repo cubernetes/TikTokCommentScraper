@@ -1,4 +1,4 @@
-# Functionality?
+# Functionality
 This comment scraper/extractor manages to get all the comments
 from any TikTok post. This can be useful for giveaways, votes or other bigger
 community interactions.
