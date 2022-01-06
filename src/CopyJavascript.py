@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from pyperclip import copy
 import os
 

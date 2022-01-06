@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from csv import reader
 from os import system
 from datetime import datetime as d
