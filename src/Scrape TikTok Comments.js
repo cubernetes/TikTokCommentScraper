@@ -1,18 +1,18 @@
 with({
     copy
 }) {
-    var AllCommentsXPath                 = '/html/body/div[1]/div[2]/div[3]/div[2]/div[3]';
-    var level2CommentsXPath              = '/html/body/div[1]/div[2]/div[3]/div[2]/div[3]/div/div[2]/div/a';
+    var AllCommentsXPath                 = '/html/body/div/div[2]/div[3]/div[2]/div[3]';
+    var level2CommentsXPath              = '/html/body/div/div[2]/div[3]/div[2]/div[3]/div/div[2]/div/a';
 
-    var publisherProfileUrlXPath         = '/html/body/div[1]/div[2]/div[3]/div[2]/div[1]/a[1]';
-    var nicknameAndTimePublishedAgoXPath = '/html/body/div[1]/div[2]/div[3]/div[2]/div[1]/a[2]/span[2]';
+    var publisherProfileUrlXPath         = '/html/body/div/div[2]/div[3]/div[2]/div[1]/a[1]';
+    var nicknameAndTimePublishedAgoXPath = '/html/body/div/div[2]/div[3]/div[2]/div[1]/a[2]/span[2]';
 
-    var postUrlXPath                     = '/html/body/div[1]/div[2]/div[3]/div[2]/div[2]/div[2]/div[2]/p';
-    var likeCountXPath                   = '/html/body/div[1]/div[2]/div[3]/div[2]/div[2]/div[2]/div[1]/div[1]/button[1]/strong';
-    var descriptionXPath                 = '/html/body/div[1]/div[2]/div[3]/div[2]/div[2]/div[1]';
-    var tiktokNumberOfCommentsXPath      = '/html/body/div[1]/div[2]/div[3]/div[2]/div[2]/div[2]/div[1]/div[1]/button[2]/strong';
+    var postUrlXPath                     = '/html/body/div/div[2]/div[3]/div[2]/div[2]/div[2]/div[2]/p';
+    var likeCountXPath                   = '/html/body/div/div[2]/div[3]/div[2]/div[2]/div[2]/div[1]/div[1]/button[1]/strong';
+    var descriptionXPath                 = '/html/body/div/div[2]/div[3]/div[2]/div[2]/div[1]';
+    var tiktokNumberOfCommentsXPath      = '/html/body/div/div[2]/div[3]/div[2]/div[2]/div[2]/div[1]/div[1]/button[2]/strong';
 
-    var readMoreDivXPath                 = '/html/body/div[1]/div[2]/div[3]/div[2]/div[3]/div/div[2]/div/p[1]/text()/..';
+    var readMoreDivXPath                 = '/html/body/div/div[2]/div[3]/div[2]/div[3]/div/div[2]/div/p[1]/text()/..';
 
     // more reliable than querySelector
     function getElementsByXPath(xpath, parent)
@@ -62,7 +62,7 @@ with({
     }
 
     // Loading 1st level comments
-    var loadingCommentsBuffer = 15; // increase buffer if loading comments takes long and the loop break too soon
+    var loadingCommentsBuffer = 30; // increase buffer if loading comments takes long and the loop break too soon
     var numOfcommentsBeforeScroll = getAllComments().length;
     while (loadingCommentsBuffer > 0) {
 

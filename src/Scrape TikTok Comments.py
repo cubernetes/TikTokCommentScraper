@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 
 from csv import reader
-from os import system
+from os import system, getcwd
 from datetime import datetime as d
 from pyperclip import paste
 from openpyxl import Workbook
 
-csv_path = r".\Comments.csv"
+csv_path = r"/home/tosuman/TikTokCommentScraper/Comments.csv"
 
 # Needed to initialize the prompt to support ansi escape sequences
 system("")
@@ -36,7 +36,7 @@ print("\r\x1b[32m[*]\x1b[0m Converting CSV file to Excel Workbook (XLSX).")
 print(f"\x1b[32m[*]\x1b[0m Written {line_count} line(s).")
 
 print("\x1b[34m[*]\x1b[0m Saving XLSX file.", end="", flush=True)
-wb.save(rf".\Comments_{d.timestamp(d.now())}.xlsx")
+wb.save(rf"/home/tosuman/TikTokCommentScraper/Comments_{d.timestamp(d.now())}.xlsx")
 print("\r\x1b[32m[*]\x1b[0m Saving XLSX file.")
 
 print("\x1b[34m[*]\x1b[0m Deleting CSV file.", end="", flush=True)
