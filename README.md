@@ -38,7 +38,8 @@ Python requirements would be (if you don't want to use the venv or if you aren't
 	- **if you're not using Windows**, just run the src/ScrapeTikTokComments.py file manually with python (see requirements)
 - voilá, the file 'Comments_<UtcTimeStamp>.xlsx' will now contain all the comments and additional information
 
-You can also watch this video: https://www.youtube.com/watch?v=FsQEm2zalWA
+You can also watch this video: https://youtu.be/FsQEm2zalWA
+or if you don't have time: https://youtu.be/lYZw75k7QVc
 
 ## In Detail
 
