@@ -46,7 +46,9 @@ print("\r\x1b[32m[*]\x1b[0m Saving XLSX file.")
 
 print("\x1b[34m[*]\x1b[0m Deleting CSV file.", end="", flush=True)
 
-remove('Comments.csv')
+try:
+    remove('Comments.csv')
+except: pass
 
 print("\r\x1b[32m[*]\x1b[0m Deleting CSV file.")
 
