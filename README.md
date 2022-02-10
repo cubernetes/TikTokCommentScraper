@@ -5,7 +5,7 @@ community interactions.
 
 # Installation
 Contrary to convention, this repo does contain the virtual environment it's
-running on (**Windows only!**), so it's instantly usable also for people how don't want to first install python and requirements.
+running on (**Windows**, for Linux see below), so it's instantly usable also for people how don't want to first install python and requirements.
 The python environment is heavily stripped down (\~7MB).
 Installation is as easy as:
 
