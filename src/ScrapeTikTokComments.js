@@ -1,7 +1,7 @@
 with({
     copy
 }) {
-    var AllCommentsXPath                 = '/html/body/div/div[2]/div[3]/div[2]/div[3]';
+    var AllCommentsXPath                 = '/html/body/div[2]/div[2]/div[3]/div[2]/div[3]';
     var level2CommentsXPath              = '/html/body/div/div[2]/div[3]/div[2]/div[3]/div/div[2]/div/a';
 
     var publisherProfileUrlXPath         = '/html/body/div/div[2]/div[3]/div[2]/div[1]/a[1]';
