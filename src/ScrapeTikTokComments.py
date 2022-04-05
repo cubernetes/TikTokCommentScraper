@@ -53,10 +53,12 @@ print("\r\x1b[32m[*]\x1b[0m Saving XLSX file.")
 
 print("\x1b[34m[*]\x1b[0m Deleting CSV file.", end="", flush=True)
 
+print("\r\x1b[34m[*]\x1b[0m Deleting CSV file.", end="")
 try:
-	remove('Comments.csv')
-except: pass
+	remove(path.join(cur_dir, "..", "Comments.csv"))
+	print("\r\x1b[32m[*]\x1b[0m Deleting CSV file.")
+except:
+	print("\r\x1b[31m[*]\x1b[0m Could not delete CSV file.")
 
-print("\r\x1b[32m[*]\x1b[0m Deleting CSV file.")
 
 print("\x1b[32m[*]\x1b[0m Done.", end="\n\n")

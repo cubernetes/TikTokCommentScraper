@@ -1,6 +1,4 @@
-with({
-    copy
-}) {
+with ({copy}) (async function() {
     var AllCommentsXPath                 = '/html/body/div[2]/div[2]/div[3]/div[2]/div[3]';
     var level2CommentsXPath              = '/html/body/div/div[2]/div[3]/div[2]/div[3]/div/div[2]/div/a';
 
@@ -155,4 +153,4 @@ with({
     console.log('CSV copied to clipboard!');
 
     copy(csv);
-}
+})()
