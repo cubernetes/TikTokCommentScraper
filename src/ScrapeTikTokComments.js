@@ -1,18 +1,18 @@
 with({
     copy
 }) {
-    var AllCommentsXPath                 = '/html/body/div/div[2]/div[3]/div[2]/div[3]';
-    var level2CommentsXPath              = '/html/body/div/div[2]/div[3]/div[2]/div[3]/div/div[2]/div/a';
+    var allCommentsXPath                 = '//div[contains(@class, "DivCommentContentContainer")]';
+    var level2CommentsXPath              = '//div[contains(@class, "DivReplyContainer")]';
 
-    var publisherProfileUrlXPath         = '/html/body/div/div[2]/div[3]/div[2]/div[1]/a[1]';
-    var nicknameAndTimePublishedAgoXPath = '/html/body/div/div[2]/div[3]/div[2]/div[1]/a[2]/span[2]';
+    var publisherProfileUrlXPath         = '/html/body/div[2]/div[2]/div[2]/div[2]/div[3]/div[2]/div[1]/a[2]';
+    var nicknameAndTimePublishedAgoXPath = '/html/body/div[2]/div[2]/div[2]/div[2]/div[3]/div[2]/div[1]/a[2]/span[2]';
 
-    var postUrlXPath                     = '/html/body/div/div[2]/div[3]/div[2]/div[2]/div[2]/div[2]/p';
-    var likeCountXPath                   = '/html/body/div/div[2]/div[3]/div[2]/div[2]/div[2]/div[1]/div[1]/button[1]/strong';
-    var descriptionXPath                 = '/html/body/div/div[2]/div[3]/div[2]/div[2]/div[1]';
-    var tiktokNumberOfCommentsXPath      = '/html/body/div/div[2]/div[3]/div[2]/div[2]/div[2]/div[1]/div[1]/button[2]/strong';
+    var postUrlXPath                     = '/html/body/div[2]/div[2]/div[2]/div[2]/div[3]/div[2]/div[2]/div[2]/div[2]/p';
+    var likeCountXPath                   = '/html/body/div[2]/div[2]/div[2]/div[2]/div[3]/div[2]/div[2]/div[2]/div[1]/div[1]/button[1]/strong';
+    var descriptionXPath                 = '/html/body/div[2]/div[2]/div[2]/div[2]/div[3]/div[2]/div[2]/div[1]';
+    var tiktokNumberOfCommentsXPath      = '/html/body/div[2]/div[2]/div[2]/div[2]/div[3]/div[2]/div[2]/div[2]/div[1]/div[1]/button[2]/strong';
 
-    var readMoreDivXPath                 = '/html/body/div/div[2]/div[3]/div[2]/div[3]/div/div[2]/div/p[1]/text()/..';
+    var viewMoreDivXPath                 = '//p[contains(@class, "PReplyAction") and contains(., "View")]';
 
     // more reliable than querySelector
     function getElementsByXPath(xpath, parent)
@@ -27,11 +27,19 @@ with({
     }
 
     function getAllComments(){
-        return getElementsByXPath(AllCommentsXPath)[0].children;
+        return getElementsByXPath(allCommentsXPath);
     }
 
     function quoteString(s) {
         return '"' + String(s).replaceAll('"', '""') + '"';
+    }
+
+    function getNickname(comment) {
+        return getElementsByXPath('./div[1]/a', comment)[0].outerText;
+    }
+
+    function isReply(comment) {
+        return comment.parentElement.className.includes('Reply')
     }
 
     function formatDate(strDate) {
@@ -52,17 +60,18 @@ with({
     }
 
     function csvFromComment(comment) {
-        nickname = getElementsByXPath('./div[1]/a', comment)[0].outerText;
+        nickname = getNickname(comment);
         user = getElementsByXPath('./a', comment)[0]['href'].split('?')[0].split('/')[3].slice(1);
         commentText = getElementsByXPath('./div[1]/p', comment)[0].outerText;
         timeCommentedAgo = formatDate(getElementsByXPath('./div[1]/p[2]/span', comment)[0].outerText);
         commentLikesCount = getElementsByXPath('./div[2]', comment)[0].outerText;
         pic = getElementsByXPath('./a/span/img', comment)[0]['src'];
-        return quoteString(nickname) + ',' + quoteString(user) + ',' + 'https://example.com' + ',' + quoteString(commentText) + ',' + timeCommentedAgo + ',' + commentLikesCount + ',' + quoteString(pic);
+        return quoteString(nickname) + ',' + quoteString(user) + ',' + 'https://example.com' + ',' 
+		     + quoteString(commentText) + ',' + timeCommentedAgo + ',' + commentLikesCount + ',' + quoteString(pic);
     }
 
     // Loading 1st level comments
-    var loadingCommentsBuffer = 30; // increase buffer if loading comments takes long and the loop break too soon
+    var loadingCommentsBuffer = 30; // increase buffer if loading comments takes long and the loop breaks too soon
     var numOfcommentsBeforeScroll = getAllComments().length;
     while (loadingCommentsBuffer > 0) {
 
@@ -85,15 +94,15 @@ with({
         // Wait 0.3 seconds.
         await new Promise(r => setTimeout(r, 300));
     }
-    console.log('Openend all 1st level comments');
+    console.log('Opened all 1st level comments');
 
 
     // Loading 2nd level comments
     loadingCommentsBuffer = 5; // increase buffer if loading comments takes long and the loop break too soon
     while (loadingCommentsBuffer > 0) {
-        readMoreDivs = getElementsByXPath(readMoreDivXPath);
+        readMoreDivs = getElementsByXPath(viewMoreDivXPath);
         for (var i = 0; i < readMoreDivs.length; i++) {
-            readMoreDivs[i].click()
+            readMoreDivs[i].click();
         }
 
         await new Promise(r => setTimeout(r, 500));
@@ -104,17 +113,17 @@ with({
         }
         console.log('Buffer ' + loadingCommentsBuffer);
     }
-    console.log('Openened all 2nd level comments');
+    console.log('Opened all 2nd level comments');
 
 
     // Reading all comments, extracting and converting the data to csv
     var comments = getAllComments();
+    var level2commentsLength = getElementsByXPath(level2CommentsXPath).length;
 
     var publisherProfileUrl = getElementsByXPath(publisherProfileUrlXPath)[0]['href'].split('?')[0];
     var nicknameAndPublishedAgoTime = getElementsByXPath(nicknameAndTimePublishedAgoXPath)[0].outerText.replaceAll('\n', ' ').split(' · ');
-    var level2commentsLength = getElementsByXPath(level2CommentsXPath).length;
 
-    var commentNumberDifference = Math.abs(getElementsByXPath(tiktokNumberOfCommentsXPath)[0].outerText - (comments.length + level2commentsLength))
+    var commentNumberDifference = Math.abs(getElementsByXPath(tiktokNumberOfCommentsXPath)[0].outerText - (comments.length));
 
 
     var csv = 'Now,' + Date() + '\n';
@@ -125,29 +134,35 @@ with({
     csv += 'Publish Time,' + formatDate(nicknameAndPublishedAgoTime[1]) + '\n'; // jsx removable
     csv += 'Post Likes,' + getElementsByXPath(likeCountXPath)[0].outerText + '\n'; // jsx removable
     csv += 'Description,' + quoteString(getElementsByXPath(descriptionXPath)[0].outerText) + '\n';
-    csv += 'Number of 1st level comments,' + comments.length + '\n';
+    csv += 'Number of 1st level comments,' + comments.length - level2commentsLength + '\n';
     csv += 'Number of 2nd level comments,' + level2commentsLength + '\n';
-    csv += '"Total Comments (actual, in this list, rendered in the comment section (needs all comments to be loaded!))",' + (comments.length + level2commentsLength) + '\n';
+    csv += '"Total Comments (actual, in this list, rendered in the comment section (needs all comments to be loaded!))",' + (comments.length) + '\n';
     csv += "Total Comments (which TikTok tells you; it's too high most of the time when dealing with many comments OR way too low because TikTok limits the number of comments to prevent scraping)," + getElementsByXPath(tiktokNumberOfCommentsXPath)[0].outerText + '\n';
     csv += "Difference," + commentNumberDifference + '\n';
-    csv += 'Comment Number (ID),Nickname,User @,User URL,Comment Text,Time,Likes,Profile Picture URL,Is 2nd Level Comment,Replied To,Number of replies\n';
-    var count = 1;
+    csv += 'Comment Number (ID),Nickname,User @,User URL,Comment Text,Time,Likes,Profile Picture URL,Is 2nd Level Comment,User Replied To,Number of Replies\n';
 
+    var count = 1;
+    var totalReplies = 0;
+    var repliesSeen = 1;
     for (var i = 0; i < comments.length; i++) {
-        level1comment = comments[i].children[0]
-        more = comments[i].children[1]
-        if (typeof more !== 'undefined') {
-            more = [...more.children].slice(0,-1);
-            numberOfReplies = more.length;
-        } else {
-            numberOfReplies = 0;
+        csv += count + ',' + csvFromComment(comments[i]) + ',';
+        if (i > 0 && isReply(comments[i])) {
+            csv += "Yes," + quoteString(getNickname(comments[i - repliesSeen])) + ',0';
+            repliesSeen += 1;
         }
-        csv += count + ',' + csvFromComment(level1comment) + ',No,---,' + numberOfReplies + '\n';
-        repliedTo = getElementsByXPath('./a', level1comment)[0]['href'].split('?')[0].split('/')[3].slice(1);
-        for (j = 0; j < numberOfReplies; j++) {
-            count++;
-            csv += count + ',' + csvFromComment(more[j]) + ',Yes,' + repliedTo + ',---\n';
+        else {
+            csv += 'No,---,';
+            totalReplies = 0;
+            repliesSeen = 1;
+            for (var j = 1; j < comments.length - i; j++) {
+                if (!isReply(comments[i + j])) {
+                    break;
+                }
+                totalReplies += 1;
+            }
+            csv += totalReplies;
         }
+        csv += '\n';
         count++;
     }
     var apparentCommentNumber = getElementsByXPath(tiktokNumberOfCommentsXPath)[0].outerText;
