@@ -8,13 +8,13 @@ with({
     var publisherProfileUrlXPath         = '//span[contains(@class, "SpanUniqueId")]';
     var nicknameAndTimePublishedAgoXPath = '//span[contains(@class, "SpanOtherInfos")]';
 
-	// we will filter these later because we have to handle them differently depending on what layout we have
+    // we will filter these later because we have to handle them differently depending on what layout we have
     var likesCommentsSharesXPath         = "//strong[contains(@class, 'StrongText')]";
-	
+
     var postUrlXPath                     = '//div[contains(@class, "CopyLinkText")]'
     var descriptionXPath                 = '//h4[contains(@class, "H4Link")]/preceding-sibling::div'
 
-	// we need "View" or else this catches "Hide" too
+    // we need "View" or else this catches "Hide" too
     var viewMoreDivXPath                 = '//p[contains(@class, "PReplyAction") and contains(., "View")]';
 
     // more reliable than querySelector
@@ -45,7 +45,7 @@ with({
         return comment.parentElement.className.includes('Reply')
     }
 
-	// if there's an actual date, formats it as DD-MM-YYYY (though TikTok displays it as MM-DD)
+    // if there's an actual date, formats it as DD-MM-YYYY (though TikTok displays it as MM-DD)
     function formatDate(strDate) {
         if (typeof strDate !== 'undefined' && strDate !== null) {
             f = strDate.split('-');
@@ -69,9 +69,9 @@ with({
         commentText = getElementsByXPath('./div[1]/p', comment)[0].outerText;
         timeCommentedAgo = formatDate(getElementsByXPath('./div[1]/p[2]/span', comment)[0].outerText);
         commentLikesCount = getElementsByXPath('./div[2]', comment)[0].outerText;
-        pic = getElementsByXPath('./a/span/img', comment)[0]['src'];
-        return quoteString(nickname) + ',' + quoteString(user) + ',' + 'https://www.tiktok.com/@' + user + ',' 
-		     + quoteString(commentText) + ',' + timeCommentedAgo + ',' + commentLikesCount + ',' + quoteString(pic);
+        pic = getElementsByXPath('./a/span/img', comment)[0] ? getElementsByXPath('./a/span/img', comment)[0]['src'] : "N/A";
+        return quoteString(nickname) + ',' + quoteString(user) + ',' + 'https://www.tiktok.com/@' + user + ','
+             + quoteString(commentText) + ',' + timeCommentedAgo + ',' + commentLikesCount + ',' + quoteString(pic);
     }
 
     // Loading 1st level comments
@@ -89,9 +89,9 @@ with({
         if (numOfcommentsAftScroll !== numOfcommentsBeforeScroll) {
             loadingCommentsBuffer = 15;
         } else {
-			// direct URLs can get jammed up because there's a recommended videos list that sometimes scrolls first, so scroll the div just in case
-			commentsDiv = getElementsByXPath(commentsDivXPath)[0]
-			commentsDiv.scrollIntoView(false);
+            // direct URLs can get jammed up because there's a recommended videos list that sometimes scrolls first, so scroll the div just in case
+            commentsDiv = getElementsByXPath(commentsDivXPath)[0]
+            commentsDiv.scrollIntoView(false);
             loadingCommentsBuffer--;
         };
         numOfcommentsBeforeScroll = numOfcommentsAftScroll;
@@ -128,15 +128,15 @@ with({
     var publisherProfileUrl = getElementsByXPath(publisherProfileUrlXPath)[0].outerText;
     var nicknameAndTimePublishedAgo = getElementsByXPath(nicknameAndTimePublishedAgoXPath)[0].outerText.replaceAll('\n', ' ').split(' · ');
 
-	// direct URLs don't include a place to copy the link (since it'd be redundant) so just grab the actual page URL
-	var url = window.location.href.split('?')[0]
-	// hashtags use the StrongText tag in addition to like/comment/share count, so filter those out
-	var likesCommentsShares = getElementsByXPath(likesCommentsSharesXPath).filter((element) => { return !element.outerText.includes('\#') })
-	var likes = likesCommentsShares[0].outerText;
-	var totalComments = likesCommentsShares[1].outerText;
-	
-	// the pop-up search window interface doesn't include shares
-	var shares = likesCommentsShares[2] ? likesCommentsShares[2].outerText : "N/A";
+    // direct URLs don't include a place to copy the link (since it'd be redundant) so just grab the actual page URL
+    var url = window.location.href.split('?')[0]
+    // hashtags use the StrongText tag in addition to like/comment/share count, so filter those out
+    var likesCommentsShares = getElementsByXPath(likesCommentsSharesXPath).filter((element) => { return !element.outerText.includes('\#') })
+    var likes = likesCommentsShares[0].outerText;
+    var totalComments = likesCommentsShares[1].outerText;
+
+    // the pop-up search window interface doesn't include shares
+    var shares = likesCommentsShares[2] ? likesCommentsShares[2].outerText : "N/A";
     var commentNumberDifference = Math.abs(parseInt(totalComments) - (comments.length));
 
 
@@ -146,8 +146,8 @@ with({
     csv += 'Publisher @,' + publisherProfileUrl + '\n';
     csv += 'Publisher URL,' + "https://www.tiktok.com/@" + publisherProfileUrl + '\n';
     csv += 'Publish Time,' + formatDate(nicknameAndTimePublishedAgo[1]) + '\n';
-    csv += 'Post Likes,' + likes + '\n'; 
-    csv += 'Post Shares,' + shares + '\n'; 
+    csv += 'Post Likes,' + likes + '\n';
+    csv += 'Post Shares,' + shares + '\n';
     csv += 'Description,' + quoteString(getElementsByXPath(descriptionXPath)[0].outerText) + '\n';
     csv += 'Number of 1st level comments,' + (comments.length - level2CommentsLength) + '\n';
     csv += 'Number of 2nd level comments,' + level2CommentsLength + '\n';
@@ -169,7 +169,7 @@ with({
             csv += 'No,---,';
             totalReplies = 0;
             repliesSeen = 1;
-			// Replies always come after the first comment, so look ahead until we reach another top-level comment
+            // Replies always come after the first comment, so look ahead until we reach another top-level comment
             for (var j = 1; j < comments.length - i; j++) {
                 if (!isReply(comments[i + j])) {
                     break;
