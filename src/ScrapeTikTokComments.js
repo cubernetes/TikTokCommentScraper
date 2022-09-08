@@ -63,6 +63,14 @@ with({
         }
     }
 
+    function extractNumericStats() {
+        var strongTags = getElementsByXPath(likesCommentsSharesXPath);
+        // the StrongText class is used on lots of things that aren't likes or comments; the last two or three are what we need
+		// if it's a direct URL, shares are displayed, so we want the last three; if not, we only want the last two
+        likesCommentsShares = parseInt(strongTags[(strongTags.length - 3)].outerText) ? strongTags.slice(-3) : strongTags.slice(-2);
+        return likesCommentsShares;
+    }
+
     function csvFromComment(comment) {
         nickname = getNickname(comment);
         user = getElementsByXPath('./a', comment)[0]['href'].split('?')[0].split('/')[3].slice(1);
@@ -90,7 +98,7 @@ with({
             loadingCommentsBuffer = 15;
         } else {
             // direct URLs can get jammed up because there's a recommended videos list that sometimes scrolls first, so scroll the div just in case
-            commentsDiv = getElementsByXPath(commentsDivXPath)[0]
+            commentsDiv = getElementsByXPath(commentsDivXPath)[0];
             commentsDiv.scrollIntoView(false);
             loadingCommentsBuffer--;
         };
@@ -130,8 +138,7 @@ with({
 
     // direct URLs don't include a place to copy the link (since it'd be redundant) so just grab the actual page URL
     var url = window.location.href.split('?')[0]
-    // hashtags use the StrongText tag in addition to like/comment/share count, so filter those out
-    var likesCommentsShares = getElementsByXPath(likesCommentsSharesXPath).filter((element) => { return !element.outerText.includes('\#') })
+    var likesCommentsShares = extractNumericStats();
     var likes = likesCommentsShares[0].outerText;
     var totalComments = likesCommentsShares[1].outerText;
 
@@ -151,7 +158,7 @@ with({
     csv += 'Description,' + quoteString(getElementsByXPath(descriptionXPath)[0].outerText) + '\n';
     csv += 'Number of 1st level comments,' + (comments.length - level2CommentsLength) + '\n';
     csv += 'Number of 2nd level comments,' + level2CommentsLength + '\n';
-    csv += '"Total Comments (actual, in this list, rendered in the comment section (needs all comments to be loaded!))",' + (comments.length) + '\n';
+    csv += '"Total Comments (actual, in this list, rendered in the comment section; needs all comments to be loaded!)",' + (comments.length) + '\n';
     csv += "Total Comments (which TikTok tells you; it's too high most of the time when dealing with many comments OR way too low because TikTok limits the number of comments to prevent scraping)," + totalComments + '\n';
     csv += "Difference," + commentNumberDifference + '\n';
     csv += 'Comment Number (ID),Nickname,User @,User URL,Comment Text,Time,Likes,Profile Picture URL,Is 2nd Level Comment,User Replied To,Number of Replies\n';
