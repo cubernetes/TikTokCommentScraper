@@ -1,3 +1,4 @@
+
 with({
     copy
 }) {
@@ -193,4 +194,4 @@ with({
     console.log('CSV copied to clipboard!');
 
     copy(csv);
-}
+})()
