@@ -78,9 +78,9 @@ with({
         commentText = getElementsByXPath('./div[1]/p', comment)[0].outerText;
         timeCommentedAgo = formatDate(getElementsByXPath('./div[1]/p[2]/span', comment)[0].outerText);
         commentLikesCount = getElementsByXPath('./div[2]', comment)[0].outerText;
-        pic = getElementsByXPath('./a/span/img', comment)[0] ? getElementsByXPath('./a/span/img', comment)[0]['src'] : "N/A";
+        // pic = getElementsByXPath('./a/span/img', comment)[0] ? getElementsByXPath('./a/span/img', comment)[0]['src'] : "N/A";
         return quoteString(nickname) + ',' + quoteString(user) + ',' + 'https://www.tiktok.com/@' + user + ','
-             + quoteString(commentText) + ',' + timeCommentedAgo + ',' + commentLikesCount + ',' + quoteString(pic);
+             + quoteString(commentText) + ',' + timeCommentedAgo + ',' + commentLikesCount; // + ',' + quoteString(pic);
     }
 
     // Loading 1st level comments
