@@ -88,3 +88,11 @@ load/render all comments, you only count e.g. 740 comments, which happens
 pretty much always with many comments. In the 3000 comments test, 64 comments
 were never loaded and therefore not included in the .xlsx file. Fortunately,
 this percentage is negligible most of the time.
+
+Attempted scraper with a post with 6000+ comments. A substantial amount of
+comments were lost. Only around 460 comments were recorded.
+(More accurately: 468/ 6554 comments recorded, 6086 lost)
+
+Attempted scrapwer with a post of 18.3K comments. Same issue where a substantial
+amount were lost (6392 comments recorded). This time, it incorrectly
+recorded the total number of comments, recording only 18 instead of 18,300.
