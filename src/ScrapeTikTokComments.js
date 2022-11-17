@@ -78,13 +78,13 @@ with({
         commentText = getElementsByXPath('./div[1]/p', comment)[0].outerText;
         timeCommentedAgo = formatDate(getElementsByXPath('./div[1]/p[2]/span', comment)[0].outerText);
         commentLikesCount = getElementsByXPath('./div[2]', comment)[0].outerText;
-        // pic = getElementsByXPath('./a/span/img', comment)[0] ? getElementsByXPath('./a/span/img', comment)[0]['src'] : "N/A";
+        pic = getElementsByXPath('./a/span/img', comment)[0] ? getElementsByXPath('./a/span/img', comment)[0]['src'] : "N/A";
         return quoteString(nickname) + ',' + quoteString(user) + ',' + 'https://www.tiktok.com/@' + user + ','
              + quoteString(commentText) + ',' + timeCommentedAgo + ',' + commentLikesCount;
     }
 
     // Loading 1st level comments
-    var loadingCommentsBuffer = 30; // increase buffer if loading comments takes long and the loop breaks too soon
+    var loadingCommentsBuffer = 50; // increase buffer if loading comments takes long and the loop breaks too soon
     var numOfcommentsBeforeScroll = getAllComments().length;
     while (loadingCommentsBuffer > 0) {
 
